@@ -11,7 +11,7 @@ import Foundation
 struct ActivityModel: Identifiable {
     let id: UUID
     var title: String       //ex: "Study", "Learn SwiftUI State-Binding"
-    var duration: Int       //In minutes. ex: 5 minutes
+    var duration: Int       //In seconds, ex: 5 min preset will be stored as 300
     var sessions: [SessionModel]    //ex: "3 sessions"
     var lastUsed: Date?
     
@@ -19,12 +19,12 @@ struct ActivityModel: Identifiable {
         sessions.count
     }
     
-    init(id: UUID = UUID(), title: String, duration: Int, lastUsed: Date? = nil) {
+    init(id: UUID = UUID(), title: String, duration: Int) {
         self.id = id
         self.title = title
         self.duration = duration
         self.sessions = []
-        self.lastUsed = lastUsed
+        self.lastUsed = nil // always nil on creation, updated later by ViewModel
     }
     
 }
