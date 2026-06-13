@@ -19,6 +19,10 @@ struct ActivityModel: Identifiable {
         sessions.count
     }
     
+    var formattedDuration: String {
+        "\(duration / 60) min"
+    }
+    
     init(id: UUID = UUID(), title: String, duration: Int) {
         self.id = id
         self.title = title
@@ -27,4 +31,20 @@ struct ActivityModel: Identifiable {
         self.lastUsed = nil // always nil on creation, updated later by ViewModel
     }
     
+}
+
+extension ActivityModel {
+    init(
+        id: UUID = UUID(),
+        title: String,
+        duration: Int,
+        sessions: [SessionModel],
+        lastUsed: Date? = nil
+    ) {
+        self.id = id
+        self.title = title
+        self.duration = duration
+        self.sessions = sessions
+        self.lastUsed = lastUsed
+    }
 }
