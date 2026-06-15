@@ -20,7 +20,7 @@ class ActivityListViewModel {
             return
         }
         
-        let activity = ActivityModel(title: title, duration: duration)
+        let activity = ActivityModel(title: trimmedTitle, duration: duration)
         
         activities.append(activity)
     }
