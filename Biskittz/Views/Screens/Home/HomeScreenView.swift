@@ -76,7 +76,6 @@ struct HomeScreenView: View {
                             isShowingSheet: $isShowingSheet,
                             activityViewModel: activityViewModel
                         )
-                        .padding()
                         .presentationDetents([.large])
                     }
                 }
