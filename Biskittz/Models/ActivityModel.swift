@@ -19,10 +19,6 @@ struct ActivityModel: Identifiable {
         sessions.count
     }
     
-    var formattedDuration: String {
-        "\(duration / 60) min"
-    }
-    
     init(id: UUID = UUID(), title: String, duration: Int) {
         self.id = id
         self.title = title

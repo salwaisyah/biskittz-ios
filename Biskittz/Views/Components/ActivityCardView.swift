@@ -17,7 +17,7 @@ struct ActivityCardView: View {
                 .lineLimit(2)
             
             HStack {
-                Text(item.formattedDuration)
+                Text(DurationFormatter.formattedDuration(for: item.duration))
                     .font(.subheadline)
                     .fontWeight(.semibold)
                     .foregroundColor(.blue)
@@ -39,7 +39,6 @@ struct ActivityCardView: View {
 }
 
 #Preview {
-
     // Create an activity id first to feed both Activity and Sessions
     let activityId = UUID()
     let activity = ActivityModel(

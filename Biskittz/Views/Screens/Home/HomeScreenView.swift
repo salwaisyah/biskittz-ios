@@ -9,13 +9,14 @@ import SwiftUI
 
 struct HomeScreenView: View {
     @State var activityViewModel: ActivityListViewModel = ActivityListViewModel()
+    @State var isShowingSheet: Bool = false
     
     var body: some View {
         NavigationStack {
             Group {
                 if activityViewModel.activities.isEmpty {
                     VStack(spacing: 16) {
-                        Image(systemName: "cat")
+                        Image(systemName: "questionmark.square")
                             .font(.system(size: 48))
                             .foregroundColor(.gray.opacity(0.8))
                         Text("No activities yet")
@@ -65,11 +66,18 @@ struct HomeScreenView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
-                        // TODO: Handle add action
+                        isShowingSheet.toggle()
                     } label: {
                         Image(systemName: "plus")
                     }
                     .buttonStyle(.borderedProminent)
+                    .sheet(isPresented: $isShowingSheet) {
+                        CreateActivitySheetView(
+                            isShowingSheet: $isShowingSheet,
+                            activityViewModel: activityViewModel
+                        )
+                        .presentationDetents([.large])
+                    }
                 }
             }
         }
