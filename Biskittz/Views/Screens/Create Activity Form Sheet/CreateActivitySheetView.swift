@@ -35,13 +35,16 @@ struct CreateActivitySheetView: View {
                         PresetButton(preset: "45\nmin", duration: $duration, hours: $hours, minutes: $minutes, seconds: $seconds)
                         PresetButton(preset: "50\nmin", duration: $duration, hours: $hours, minutes: $minutes, seconds: $seconds)
                         PresetButton(preset: "55\nmin", duration: $duration, hours: $hours, minutes: $minutes, seconds: $seconds)
+                        PresetButton(preset: "59\nmin", duration: $duration, hours: $hours, minutes: $minutes, seconds: $seconds)
                         PresetButton(preset: "1\nhr", duration: $duration, hours: $hours, minutes: $minutes, seconds: $seconds)
+                        PresetButton(preset: "2\nhr", duration: $duration, hours: $hours, minutes: $minutes, seconds: $seconds)
                     }
                 }
             }
             .frame(maxHeight: .infinity, alignment: .top)
+            .padding()
             .navigationTitle("New Activity")
-            .navigationBarTitleDisplayMode(.inline)
+            .toolbarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button {
@@ -63,6 +66,7 @@ struct CreateActivitySheetView: View {
                     .disabled(title.isEmpty || duration == 0)
                 }
             }
+            
         }
     }
     
@@ -81,66 +85,6 @@ private func titleField(label: String, text: Binding<String>) -> some View {
             .fill(Color(.tertiarySystemFill)))
 }
 
-// MARK: Preset button component
-enum PresetButtonState {
-    case selected
-    case unselected
-}
-
-struct PresetButton: View {
-    @State var currentState: PresetButtonState = .unselected
-    @State var preset: String = ""
-    @Binding var duration: Int
-    @Binding var hours: Int
-    @Binding var minutes: Int
-    @Binding var seconds: Int
-    
-    private var presetMinutes: Int? {
-        if preset.contains("\nmin") {
-            return Int(preset.components(separatedBy: CharacterSet.decimalDigits.inverted).joined())
-        } else {
-            return 60
-        }
-    }
-    
-    var body: some View {
-        Button {
-            if let value = presetMinutes {
-                duration = value * 60
-                
-                if value >= 60 {
-                    hours = value / 60
-                    minutes = 0
-                    seconds = 0
-                } else {
-                    hours = 0
-                    minutes = value
-                    seconds = 0
-                }
-                currentState = .selected
-                
-                //debug
-                print("Preset '\(preset)' selected. hours=\(hours), minutes=\(minutes), seconds=\(seconds), duration=\(duration)")
-            }
-        } label: {
-            let isSelected = (presetMinutes != nil && minutes == presetMinutes!) || currentState == .selected
-            Text(preset)
-                .frame(width: 88, height: 88)
-                .font(.title3)
-                .bold()
-                .background(isSelected ? Color.blue : Color.gray.opacity(0.3))
-                .clipShape(Circle())
-                .foregroundColor(isSelected ? .white : .primary)
-                .frame(maxWidth: .infinity)
-        }
-        .onChange(of: minutes) { _, newValue in
-            if let value = presetMinutes {
-                currentState = (newValue == value) ? .selected : .unselected
-            }
-        }
-    }
-}
-
 
 // MARK: Previews
 #Preview {
@@ -151,7 +95,6 @@ struct PresetButton: View {
     CreateActivitySheetView(
         isShowingSheet: $isShowingSheet, activityViewModel: .init()
     )
-    .padding()
 }
 
 #Preview {
