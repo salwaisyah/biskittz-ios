@@ -23,8 +23,17 @@ struct CreateActivitySheetView: View {
             LazyVStack (alignment: .leading, spacing: 12) {
                 titleField(label: "Title", text: $title)
                 
+                VStack() {
+                    TimerPickerView(selectedHour: $hours, selectedMinute: $minutes)
+                }
+                .padding(.vertical, 12)
+                
+                Text("Presets")
+                    .font(.title2)
+                    .bold()
+                
                 ScrollView(.horizontal) {
-                    LazyHStack {
+                    LazyHStack (spacing: 12) {
                         PresetButton(preset: "5\nmin", duration: $duration, hours: $hours, minutes: $minutes, seconds: $seconds)
                         PresetButton(preset: "10\nmin", duration: $duration, hours: $hours, minutes: $minutes, seconds: $seconds)
                         PresetButton(preset: "15\nmin", duration: $duration, hours: $hours, minutes: $minutes, seconds: $seconds)
@@ -96,21 +105,3 @@ private func titleField(label: String, text: Binding<String>) -> some View {
         isShowingSheet: $isShowingSheet, activityViewModel: .init()
     )
 }
-
-#Preview {
-    struct PresetButtonPreview: View {
-        @State private var duration: Int = 0
-        @State private var hours: Int = 0
-        @State private var minutes: Int = 0
-        @State private var seconds: Int = 0
-        var body: some View {
-            HStack(spacing: 16) {
-                PresetButton(currentState: .selected, preset: "5\nmin", duration: $duration, hours: $hours, minutes: $minutes, seconds: $seconds)
-                PresetButton(currentState: .unselected, preset: "25\nmin", duration: $duration, hours: $hours, minutes: $minutes, seconds: $seconds)
-            }
-            .padding()
-        }
-    }
-    return PresetButtonPreview()
-}
-

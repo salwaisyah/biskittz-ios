@@ -59,13 +59,12 @@ struct PresetButton: View {
         } label: {
             let isSelected = (parsedLabel != nil && (minutes == parsedLabel! || hours == parsedLabel!)) || currentState == .selected
             Text(preset)
-                .frame(width: 88, height: 88)
+                .padding(24)
                 .font(.title3)
                 .bold()
                 .background(isSelected ? Color.blue : Color.gray.opacity(0.3))
                 .clipShape(Circle())
                 .foregroundColor(isSelected ? .white : .primary)
-                .frame(maxWidth: .infinity)
         }
         .onChange(of: duration) { _, newValue in
             if let value = parsedLabel {
@@ -73,4 +72,21 @@ struct PresetButton: View {
             }
         }
     }
+}
+
+#Preview {
+    struct PresetButtonPreview: View {
+        @State private var duration: Int = 0
+        @State private var hours: Int = 0
+        @State private var minutes: Int = 0
+        @State private var seconds: Int = 0
+        var body: some View {
+            HStack(spacing: 16) {
+                PresetButton(currentState: .selected, preset: "5\nmin", duration: $duration, hours: $hours, minutes: $minutes, seconds: $seconds)
+                PresetButton(currentState: .unselected, preset: "25\nmin", duration: $duration, hours: $hours, minutes: $minutes, seconds: $seconds)
+            }
+            .padding()
+        }
+    }
+    return PresetButtonPreview()
 }
