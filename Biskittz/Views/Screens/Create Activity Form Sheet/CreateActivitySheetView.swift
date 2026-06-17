@@ -24,7 +24,7 @@ struct CreateActivitySheetView: View {
                 titleField(label: "Title", text: $title)
                 
                 VStack() {
-                    TimerPickerView(selectedHour: $hours, selectedMinute: $minutes)
+                    TimerPickerView(selectedHour: $hours, selectedMinute: $minutes, duration: $duration)
                 }
                 .padding(.vertical, 12)
                 
