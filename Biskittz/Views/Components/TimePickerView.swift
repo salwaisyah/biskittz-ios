@@ -10,6 +10,12 @@ import SwiftUI
 struct TimerPickerView: View {
     @Binding var selectedHour: Int
     @Binding var selectedMinute: Int
+    @Binding var duration: Int
+    
+    private var totalDuration: Int {
+        let duration = selectedHour * 3600 + selectedMinute * 60
+        return duration
+    }
 
     private let hours   = Array(0...23)   // 0 – 23 h
     private let minutes = Array(0...59)   // 0 – 59 min
@@ -19,6 +25,18 @@ struct TimerPickerView: View {
             VStack(spacing: 32) {
                 pickerDrum
                 summaryLabel
+            }
+            .onChange(of: selectedHour) { _, _ in
+                let d = totalDuration
+                
+                //debug
+                print("[TimerPickerView] duration changed (hour): \(d) sec")
+            }
+            .onChange(of: selectedMinute) { _, _ in
+                let d = totalDuration
+                
+                //debug
+                print("[TimerPickerView] duration changed (minute): \(d) sec")
             }
         }
     }
@@ -142,9 +160,10 @@ struct TimerPickerView: View {
     struct TimerPickerPreview: View {
         @State private var selectedHour: Int = 0
         @State private var selectedMinute: Int = 0
+        @State private var duration: Int = 0
         
         var body: some View {
-            TimerPickerView(selectedHour: $selectedHour, selectedMinute: $selectedMinute)
+            TimerPickerView(selectedHour: $selectedHour, selectedMinute: $selectedMinute, duration: $duration)
         }
     }
     return TimerPickerPreview()
