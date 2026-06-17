@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct TimerPickerView: View {
-    @State private var selectedHour: Int = 0
-    @State private var selectedMinute: Int = 0
+    @Binding var selectedHour: Int
+    @Binding var selectedMinute: Int
 
     private let hours   = Array(0...23)   // 0 – 23 h
     private let minutes = Array(0...59)   // 0 – 59 min
@@ -139,5 +139,13 @@ struct TimerPickerView: View {
 
 // MARK: - Preview
 #Preview {
-    TimerPickerView()
+    struct TimerPickerPreview: View {
+        @State private var selectedHour: Int = 0
+        @State private var selectedMinute: Int = 0
+        
+        var body: some View {
+            TimerPickerView(selectedHour: $selectedHour, selectedMinute: $selectedMinute)
+        }
+    }
+    return TimerPickerPreview()
 }
