@@ -28,15 +28,19 @@ struct TimerPickerView: View {
             }
             .onChange(of: selectedHour) { _, _ in
                 let d = totalDuration
+                let h = selectedHour
                 
                 //debug
-                print("[TimerPickerView] duration changed (hour): \(d) sec")
+                print("[TimerPickerView] duration changed (hour=\(h)): \(d) sec")
+                return duration = d
             }
             .onChange(of: selectedMinute) { _, _ in
                 let d = totalDuration
+                let m = selectedMinute
                 
                 //debug
-                print("[TimerPickerView] duration changed (minute): \(d) sec")
+                print("[TimerPickerView] duration changed (minute=\(m)): \(d) sec")
+                return duration = d
             }
         }
     }
