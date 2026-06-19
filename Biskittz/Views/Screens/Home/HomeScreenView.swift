@@ -52,8 +52,10 @@ struct HomeScreenView: View {
                         .foregroundStyle(Color.white)
                         
                         LazyVStack(spacing: 12) {
-                            ForEach(activityViewModel.activities) { activity in
-                                ActivityCardView(item: activity)
+                            ForEach(activityViewModel.activities, id: \.id) { activity in
+                                NavigationLink(destination: TimerScreenView()) {
+                                    ActivityCardView(item: activity)
+                                }
                             }
                         }
                         .padding(.horizontal)
