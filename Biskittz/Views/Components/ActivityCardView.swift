@@ -14,6 +14,7 @@ struct ActivityCardView: View {
         VStack (alignment: .leading, spacing: 12){
             Text(item.title)
                 .font(.headline)
+                .foregroundColor(.primary)
                 .lineLimit(2)
             
             HStack {
