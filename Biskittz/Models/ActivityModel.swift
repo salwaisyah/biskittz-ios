@@ -8,7 +8,15 @@
 import Foundation
 
 
-struct ActivityModel: Identifiable {
+struct ActivityModel: Identifiable, Hashable {
+    static func == (lhs: ActivityModel, rhs: ActivityModel) -> Bool {
+        return lhs.id == rhs.id
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+    
     let id: UUID
     var title: String       //ex: "Study", "Learn SwiftUI State-Binding"
     var duration: Int       //In seconds, ex: 5 min preset will be stored as 300
