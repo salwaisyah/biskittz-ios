@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct SessionModel: Identifiable {
+struct SessionModel: Identifiable, Hashable {
     let id: UUID
     let activityId: UUID    //fethed from parent activity
     let completedAt: Date
