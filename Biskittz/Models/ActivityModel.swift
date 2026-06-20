@@ -37,6 +37,7 @@ struct ActivityModel: Identifiable, Hashable {
     
 }
 
+// for previewing with mock data
 extension ActivityModel {
     init(
         id: UUID = UUID(),
