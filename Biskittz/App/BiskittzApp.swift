@@ -9,9 +9,12 @@ import SwiftUI
 
 @main
 struct BiskittzApp: App {
+    @State private var activityListViewModel = ActivityListViewModel()
+    
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            HomeScreenView()
+                .environment(activityListViewModel)
         }
     }
 }
