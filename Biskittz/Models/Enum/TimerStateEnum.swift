@@ -14,12 +14,12 @@ enum TimerState {
     case paused
     case completed
     
-    var dotColor: Color {
-            switch self {
-            case .idle:    return .blue
-            case .running: return .green
-            case .paused:  return .orange
-            case .completed: return .indigo
-            }
+    var animationName: String {
+        switch self {
+        case .idle:      return "cat-idle"
+        case .running:   return "cat-kneading"
+        case .paused:    return "cat-questioning"
+        case .completed: return "cat-completed"
+        }
     }
 }
