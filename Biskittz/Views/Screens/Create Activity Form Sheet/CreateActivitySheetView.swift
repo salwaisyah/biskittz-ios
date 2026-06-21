@@ -20,62 +20,65 @@ struct CreateActivitySheetView: View {
     
     var body: some View {
         NavigationStack {
-            LazyVStack (alignment: .leading, spacing: 12) {
-                titleField(label: "Title", text: $title)
-                
-                VStack() {
-                    TimerPickerView(selectedHour: $hours, selectedMinute: $minutes, duration: $duration)
+            ScrollView {
+                VStack (alignment: .leading, spacing: 12) {
+                    titleField(label: "What do you want to focus on?", text: $title)
+                    
+                    VStack() {
+                        TimerPickerView(selectedHour: $hours, selectedMinute: $minutes, duration: $duration)
+                    }
+                    .padding(.vertical, 12)
+                    
+                    Text("Presets")
+                        .font(.title2)
+                        .bold()
+                    
+                    ScrollView(.horizontal) {
+                        LazyHStack (spacing: 12) {
+                            PresetButton(preset: "5\nmin", duration: $duration, hours: $hours, minutes: $minutes, seconds: $seconds)
+                            PresetButton(preset: "10\nmin", duration: $duration, hours: $hours, minutes: $minutes, seconds: $seconds)
+                            PresetButton(preset: "15\nmin", duration: $duration, hours: $hours, minutes: $minutes, seconds: $seconds)
+                            PresetButton(preset: "20\nmin", duration: $duration, hours: $hours, minutes: $minutes, seconds: $seconds)
+                            PresetButton(preset: "25\nmin", duration: $duration, hours: $hours, minutes: $minutes, seconds: $seconds)
+                            PresetButton(preset: "30\nmin", duration: $duration, hours: $hours, minutes: $minutes, seconds: $seconds)
+                            PresetButton(preset: "40\nmin", duration: $duration, hours: $hours, minutes: $minutes, seconds: $seconds)
+                            PresetButton(preset: "45\nmin", duration: $duration, hours: $hours, minutes: $minutes, seconds: $seconds)
+                            PresetButton(preset: "50\nmin", duration: $duration, hours: $hours, minutes: $minutes, seconds: $seconds)
+                            PresetButton(preset: "55\nmin", duration: $duration, hours: $hours, minutes: $minutes, seconds: $seconds)
+                            PresetButton(preset: "59\nmin", duration: $duration, hours: $hours, minutes: $minutes, seconds: $seconds)
+                            PresetButton(preset: "1\nhr", duration: $duration, hours: $hours, minutes: $minutes, seconds: $seconds)
+                            PresetButton(preset: "2\nhr", duration: $duration, hours: $hours, minutes: $minutes, seconds: $seconds)
+                        }
+                    }
+                    Spacer()
                 }
-                .padding(.vertical, 12)
-                
-                Text("Presets")
-                    .font(.title2)
-                    .bold()
-                
-                ScrollView(.horizontal) {
-                    LazyHStack (spacing: 12) {
-                        PresetButton(preset: "5\nmin", duration: $duration, hours: $hours, minutes: $minutes, seconds: $seconds)
-                        PresetButton(preset: "10\nmin", duration: $duration, hours: $hours, minutes: $minutes, seconds: $seconds)
-                        PresetButton(preset: "15\nmin", duration: $duration, hours: $hours, minutes: $minutes, seconds: $seconds)
-                        PresetButton(preset: "20\nmin", duration: $duration, hours: $hours, minutes: $minutes, seconds: $seconds)
-                        PresetButton(preset: "25\nmin", duration: $duration, hours: $hours, minutes: $minutes, seconds: $seconds)
-                        PresetButton(preset: "30\nmin", duration: $duration, hours: $hours, minutes: $minutes, seconds: $seconds)
-                        PresetButton(preset: "40\nmin", duration: $duration, hours: $hours, minutes: $minutes, seconds: $seconds)
-                        PresetButton(preset: "45\nmin", duration: $duration, hours: $hours, minutes: $minutes, seconds: $seconds)
-                        PresetButton(preset: "50\nmin", duration: $duration, hours: $hours, minutes: $minutes, seconds: $seconds)
-                        PresetButton(preset: "55\nmin", duration: $duration, hours: $hours, minutes: $minutes, seconds: $seconds)
-                        PresetButton(preset: "59\nmin", duration: $duration, hours: $hours, minutes: $minutes, seconds: $seconds)
-                        PresetButton(preset: "1\nhr", duration: $duration, hours: $hours, minutes: $minutes, seconds: $seconds)
-                        PresetButton(preset: "2\nhr", duration: $duration, hours: $hours, minutes: $minutes, seconds: $seconds)
+                .frame(alignment: .top)
+                .padding()
+                .navigationTitle("New Activity")
+                .toolbarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button {
+                            isShowingSheet = false
+                        } label: {
+                            Image(systemName: "multiply")
+                        }
+                        .clipShape(Circle())
+                    }
+                    
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button {
+                            activityViewModel.addActivity(title: title, duration: duration)
+                            isShowingSheet = false
+                        } label: {
+                            Image(systemName: "checkmark")
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .disabled(title.isEmpty || duration == 0)
                     }
                 }
             }
-            .frame(maxHeight: .infinity, alignment: .top)
-            .padding()
-            .navigationTitle("New Activity")
-            .toolbarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Button {
-                        isShowingSheet = false
-                    } label: {
-                        Image(systemName: "multiply")
-                    }
-                    .clipShape(Circle())
-                }
-                
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        activityViewModel.addActivity(title: title, duration: duration)
-                        isShowingSheet = false
-                    } label: {
-                        Image(systemName: "checkmark")
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .disabled(title.isEmpty || duration == 0)
-                }
-            }
-            
+            .ignoresSafeArea(.keyboard)
         }
     }
     
@@ -85,7 +88,7 @@ struct CreateActivitySheetView: View {
 
 // MARK: Functions for text fields (will be moved later)
 private func titleField(label: String, text: Binding<String>) -> some View {
-    TextField("Title", text: text)
+    TextField(label, text: text)
         .font(.body)
         .fontWeight(.medium)
         .padding()
