@@ -45,7 +45,7 @@ struct TimerScreenView: View {
             Text(timerViewModel.activity.title)
                 .font(.title3)
                 .fontWeight(.semibold)
-                .foregroundColor(Color.black)
+                .foregroundStyle(.primary)
             Spacer()
             ringSection
             Spacer().frame(height: 48)
@@ -73,7 +73,6 @@ struct TimerScreenView: View {
             let size = min(geo.size.width, geo.size.height)
             let ringRadius = size * 0.42
             let lineWidth: CGFloat = 14
-            let dotSize: CGFloat = size * 0.28
             
             ZStack {
                 // Track
@@ -84,7 +83,7 @@ struct TimerScreenView: View {
                 Circle()
                     .trim(from: 0, to: progress)
                     .stroke(
-                        Color.blue,
+                        Color.brown,
                         style: StrokeStyle(lineWidth: lineWidth, lineCap: .round)
                     )
                     .rotationEffect(.degrees(-90))
@@ -97,14 +96,11 @@ struct TimerScreenView: View {
                     .offset(y: -ringRadius)
                     .opacity(progress > 0.02 ? 1 : 0)
                 
-                // Tip dot — leading edge of arc
+
                 tipDot(ringRadius: ringRadius, lineWidth: lineWidth)
                 
-                // Center state dot
-                Circle()
-                    .fill(timerViewModel.timerState.dotColor)
-                    .frame(width: dotSize, height: dotSize)
-                    .animation(.easeInOut(duration: 0.3), value: timerViewModel.timerState.dotColor)
+                TimerAnimationView(timerState: timerViewModel.timerState)
+
             }
             .frame(width: size, height: size)
             .position(x: geo.size.width / 2, y: geo.size.height / 2)
@@ -201,7 +197,7 @@ struct TimerScreenView: View {
     let vm = ActivityListViewModel()
     
     TimerScreenView(
-        activity: ActivityModel(title: "Study SwiftUI", duration: 5)
+        activity: ActivityModel(title: "Study SwiftUI", duration: 10)
     )
     .environment(vm)
 }
