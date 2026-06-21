@@ -15,12 +15,6 @@ struct TimerScreenView: View {
     var duration: Int = 290          // total seconds
     var remaining: Int = 290         // seconds left
     var timerState: TimerState = .idle
-     
-    // Callbacks — bind to ViewModel actions later
-    var onStart:  () -> Void = {}
-    var onStop:   () -> Void = {}
-    var onPause:  () -> Void = {}
-    var onResume: () -> Void = {}
     
     // MARK: Derived
     private var progress: Double {
@@ -145,47 +139,62 @@ struct TimerScreenView: View {
             .padding(.bottom, 20)
     }
     
-    
     // MARK: Buttons
     @ViewBuilder
     private var buttonRow: some View {
         switch timerState {
         case .idle:
-            pillButton(label: "Start", icon: "play.fill", tint: .blue, action: onStart)
-            
+            TimerControlButtonView(
+                timerViewModel: TimerViewModel(activity: ActivityModel(id: UUID(), title: "", duration: duration)),
+                state: .start,
+                label: "Start",
+                icon: "play.fill",
+                tint: .blue
+            )
         case .running:
             HStack(spacing: 16) {
-                pillButton(label: "Stop",  icon: "stop.fill",  tint: .red,    action: onStop)
-                pillButton(label: "Pause", icon: "pause.fill", tint: .orange, action: onPause)
+                TimerControlButtonView(
+                    timerViewModel: TimerViewModel(activity: ActivityModel(id: UUID(), title: "", duration: duration)),
+                    state: .stop,
+                    label: "Stop",
+                    icon: "stop.fill",
+                    tint: .red
+                )
+                TimerControlButtonView(
+                    timerViewModel: TimerViewModel(activity: ActivityModel(id: UUID(), title: "", duration: duration)),
+                    state: .pause,
+                    label: "Pause",
+                    icon: "pause.fill",
+                    tint: .orange
+                )
             }
-            
         case .paused:
             HStack(spacing: 16) {
-                pillButton(label: "Stop",   icon: "stop.fill", tint: .red,   action: onStop)
-                pillButton(label: "Resume", icon: "play.fill", tint: .green, action: onResume)
+                TimerControlButtonView(
+                    timerViewModel: TimerViewModel(activity: ActivityModel(id: UUID(), title: "", duration: duration)),
+                    state: .stop,
+                    label: "Stop",
+                    icon: "stop.fill",
+                    tint: .red
+                )
+                TimerControlButtonView(
+                    timerViewModel: TimerViewModel(activity: ActivityModel(id: UUID(), title: "", duration: duration)),
+                    state: .resume,
+                    label: "Resume",
+                    icon: "play.fill",
+                    tint: .green
+                )
             }
+        case .completed:
+            TimerControlButtonView(
+                timerViewModel: TimerViewModel(activity: ActivityModel(id: UUID(), title: "", duration: duration)),
+                state: .start,
+                label: "Done",
+                icon: "play.fill",
+                tint: .indigo
+            )
         }
     }
-    
-    private func pillButton(
-        label: String,
-        icon: String,
-        tint: Color,
-        action: @escaping () -> Void
-    ) -> some View {
-        Button(action: action) {
-            Label(label, systemImage: icon)
-                .font(.subheadline)
-                .fontWeight(.medium)
-                .foregroundStyle(tint)
-                .padding(.horizontal, 24)
-                .padding(.vertical, 12)
-                .background(tint.opacity(0.12))
-                .clipShape(Capsule())
-        }
-        .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-    }
-    
 }
 
 // MARK: - Previews

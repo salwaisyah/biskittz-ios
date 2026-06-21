@@ -24,4 +24,13 @@ class ActivityListViewModel {
         
         activities.append(activity)
     }
+    
+    func logSession(activityID: UUID, duration: Int) {
+        if let sessionIndex = activities.firstIndex(where: { $0.id == activityID }) {
+            let session = SessionModel(activityId: activityID, duration: duration)
+            activities[sessionIndex].sessions.append(session)
+            activities[sessionIndex].lastUsed = Date()
+        }
+        // SessionModel += 1 when the timer in timer screen reaches 0
+    }
 }

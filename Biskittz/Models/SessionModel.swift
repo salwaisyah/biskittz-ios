@@ -7,11 +7,11 @@
 
 import Foundation
 
-struct SessionModel: Identifiable {
+struct SessionModel: Identifiable, Hashable {
     let id: UUID
     let activityId: UUID    //fethed from parent activity
     let completedAt: Date
-    let duration: Int       //In minutes
+    let duration: Int       //In seconds
     
     init(id: UUID = UUID(), activityId: UUID, duration: Int) {
         self.id = id
