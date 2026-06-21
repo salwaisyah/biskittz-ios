@@ -18,13 +18,13 @@ struct HomeScreenView: View {
                     VStack(spacing: 16) {
                         Image(systemName: "questionmark.square")
                             .font(.system(size: 48))
-                            .foregroundColor(.gray.opacity(0.8))
+                            .foregroundStyle(.gray.opacity(0.8))
                         Text("No activities yet")
                             .font(.body)
-                            .foregroundColor(.gray)
+                            .foregroundStyle(.gray)
                         Text("Start an activity and let Mr. Biskittz handle the kneading while you handle the work.")
                             .font(.footnote)
-                            .foregroundColor(.gray)
+                            .foregroundStyle(.gray)
                             .multilineTextAlignment(.center)
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -42,7 +42,8 @@ struct HomeScreenView: View {
                                     .bold()
                                 
                                 Text("Pick an activity and Mr. Biskittz will start kneading while you work.")
-                                    .font(.subheadline)
+                                    .font(.headline)
+                                    .fontWeight(.medium)
                             }
                             
                         }
@@ -75,6 +76,7 @@ struct HomeScreenView: View {
                         Image(systemName: "plus")
                     }
                     .buttonStyle(.borderedProminent)
+                    .tint(.brown)
                     .sheet(isPresented: $isShowingSheet) {
                         CreateActivitySheetView(
                             isShowingSheet: $isShowingSheet,
