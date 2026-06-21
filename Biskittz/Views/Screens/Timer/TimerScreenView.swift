@@ -9,27 +9,43 @@ import SwiftUI
 
 // MARK: - Main Screen
 struct TimerScreenView: View {
-    @State var activityViewModel: ActivityListViewModel = ActivityListViewModel()
+    @Environment(\.dismiss) var dismiss
+    @Environment(ActivityListViewModel.self) var activityViewModel
     
-    // Inputs — will wire these up to a ViewModel later
-    var duration: Int = 290          // total seconds
-    var remaining: Int = 290         // seconds left
-    var timerState: TimerState = .idle
+    @State var timerViewModel: TimerViewModel
+    
+    let activity: ActivityModel
+    
+    init(activity: ActivityModel) {
+        
+        self.activity = activity
+
+        _timerViewModel = State(
+            initialValue: TimerViewModel(
+                activity: activity
+            )
+        )
+    }
     
     // MARK: Derived
     private var progress: Double {
-        guard duration > 0 else { return 0 }
-        return Double(remaining) / Double(duration)
+        guard timerViewModel.timeDuration > 0 else { return 0 }
+        return Double(timerViewModel.timeRemaining) / Double(timerViewModel.timeDuration)
     }
     
-    private var hours: Int   { remaining / 3600 }
-    private var minutes: Int { (remaining % 3600) / 60 }
-    private var seconds: Int { remaining % 60 }
-    private var showHours: Bool { duration >= 3600 }
+    private var hours: Int   { timerViewModel.timeRemaining / 3600 }
+    private var minutes: Int { (timerViewModel.timeRemaining % 3600) / 60 }
+    private var seconds: Int { timerViewModel.timeRemaining % 60 }
+    private var showHours: Bool { timerViewModel.timeDuration >= 3600 }
      
     // MARK: Body
     var body: some View {
         VStack(spacing: 0) {
+            Spacer()
+            Text(timerViewModel.activity.title)
+                .font(.title3)
+                .fontWeight(.semibold)
+                .foregroundColor(Color.black)
             Spacer()
             ringSection
             Spacer().frame(height: 48)
@@ -40,8 +56,15 @@ struct TimerScreenView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color(.systemGroupedBackground))
-        .navigationTitle("Study Swift: State & Binding")
-        .navigationBarTitleDisplayMode(.inline)
+        .onAppear {
+            print("TIMER VM:", ObjectIdentifier(activityViewModel))
+        }
+        .onChange(of: timerViewModel.timerState) { oldState, newState in
+            if newState == .completed {
+                activityViewModel.logSession(activityID: timerViewModel.activity.id)
+            }
+        }
+        
     }
     
     // MARK: ringSection
@@ -79,9 +102,9 @@ struct TimerScreenView: View {
                 
                 // Center state dot
                 Circle()
-                    .fill(timerState.dotColor)
+                    .fill(timerViewModel.timerState.dotColor)
                     .frame(width: dotSize, height: dotSize)
-                    .animation(.easeInOut(duration: 0.3), value: timerState.dotColor)
+                    .animation(.easeInOut(duration: 0.3), value: timerViewModel.timerState.dotColor)
             }
             .frame(width: size, height: size)
             .position(x: geo.size.width / 2, y: geo.size.height / 2)
@@ -142,91 +165,76 @@ struct TimerScreenView: View {
     // MARK: Buttons
     @ViewBuilder
     private var buttonRow: some View {
-        switch timerState {
+        switch timerViewModel.timerState {
         case .idle:
-            TimerControlButtonView(
-                timerViewModel: TimerViewModel(activity: ActivityModel(id: UUID(), title: "", duration: duration)),
-                state: .start,
-                label: "Start",
-                icon: "play.fill",
-                tint: .blue
-            )
+            TimerControlButtonView(state: .startButton){
+                timerViewModel.start()
+            }
         case .running:
             HStack(spacing: 16) {
-                TimerControlButtonView(
-                    timerViewModel: TimerViewModel(activity: ActivityModel(id: UUID(), title: "", duration: duration)),
-                    state: .stop,
-                    label: "Stop",
-                    icon: "stop.fill",
-                    tint: .red
-                )
-                TimerControlButtonView(
-                    timerViewModel: TimerViewModel(activity: ActivityModel(id: UUID(), title: "", duration: duration)),
-                    state: .pause,
-                    label: "Pause",
-                    icon: "pause.fill",
-                    tint: .orange
-                )
+                TimerControlButtonView(state: .stopButton){
+                    timerViewModel.stop()
+                }
+                TimerControlButtonView(state: .pauseButton){
+                    timerViewModel.pause()
+                }
             }
         case .paused:
             HStack(spacing: 16) {
-                TimerControlButtonView(
-                    timerViewModel: TimerViewModel(activity: ActivityModel(id: UUID(), title: "", duration: duration)),
-                    state: .stop,
-                    label: "Stop",
-                    icon: "stop.fill",
-                    tint: .red
-                )
-                TimerControlButtonView(
-                    timerViewModel: TimerViewModel(activity: ActivityModel(id: UUID(), title: "", duration: duration)),
-                    state: .resume,
-                    label: "Resume",
-                    icon: "play.fill",
-                    tint: .green
-                )
+                TimerControlButtonView(state: .stopButton){
+                    timerViewModel.stop()
+                }
+                TimerControlButtonView(state: .resumeButton){
+                    timerViewModel.start()
+                }
             }
         case .completed:
-            TimerControlButtonView(
-                timerViewModel: TimerViewModel(activity: ActivityModel(id: UUID(), title: "", duration: duration)),
-                state: .start,
-                label: "Done",
-                icon: "play.fill",
-                tint: .indigo
-            )
+            TimerControlButtonView(state: .completeButton){
+                dismiss()
+            }
         }
     }
 }
 
 // MARK: - Previews
-#Preview("Idle") {
+#Preview("Timer Screen") {
+    let vm = ActivityListViewModel()
+    
     TimerScreenView(
-        duration: 17400,
-        remaining: 17400,
-        timerState: .idle
+        activity: ActivityModel(title: "Study SwiftUI", duration: 5)
     )
+    .environment(vm)
 }
- 
-#Preview("Running") {
-    TimerScreenView(
-        duration: 17400,
-        remaining: 14400,
-        timerState: .running
-    )
-}
- 
-#Preview("Paused") {
-    TimerScreenView(
-        duration: 17400,
-        remaining: 14400,
-        timerState: .paused
-    )
-}
- 
-#Preview("Under 1 hour — hides HR") {
-    TimerScreenView(
-        duration: 300,
-        remaining: 290,
-        timerState: .running
-    )
-}
+
+//#Preview("Idle") {
+//    TimerScreenView(
+//        duration: 17400,
+//        remaining: 17400,
+//        timerState: .idle
+//    )
+//}
+// 
+//#Preview("Running") {
+//    TimerScreenView(
+//        duration: 17400,
+//        remaining: 14400,
+//        timerState: .running
+//    )
+//}
+// 
+//#Preview("Paused") {
+//    TimerScreenView(
+//        duration: 17400,
+//        remaining: 14400,
+//        timerState: .paused
+//    )
+//}
+// 
+//#Preview("Under 1 hour — hides HR") {
+//    TimerScreenView(
+//        duration: 300,
+//        remaining: 290,
+//        timerState: .running
+//    )
+//}
  
