@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ActivityCardView: View {
-    let item: ActivityModel
+    var item: ActivityModel
     
     var body: some View {
         VStack (alignment: .leading, spacing: 12){
@@ -47,9 +47,9 @@ struct ActivityCardView: View {
         title: "Study SwiftUI: State & Binding",
         duration: 300,
         sessions: [
-            SessionModel(activityId: activityId, duration: 5),
-            SessionModel(activityId: activityId, duration: 5),
-            SessionModel(activityId: activityId, duration: 5)
+            SessionModel(activityId: activityId),
+            SessionModel(activityId: activityId),
+            SessionModel(activityId: activityId)
         ]
     )
     return ActivityCardView(item: activity)
