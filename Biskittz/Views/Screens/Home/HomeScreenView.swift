@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct HomeScreenView: View {
-    @State var activityViewModel: ActivityListViewModel = ActivityListViewModel()
+    @Environment(ActivityListViewModel.self) var activityViewModel
     @State var isShowingSheet: Bool = false
     
     var body: some View {
@@ -53,7 +53,9 @@ struct HomeScreenView: View {
                         
                         LazyVStack(spacing: 12) {
                             ForEach(activityViewModel.activities, id: \.id) { activity in
-                                NavigationLink(destination: TimerScreenView()) {
+                                NavigationLink(destination: TimerScreenView(
+                                    activity: activity
+                                )) {
                                     ActivityCardView(item: activity)
                                 }
                             }
@@ -82,21 +84,30 @@ struct HomeScreenView: View {
                     }
                 }
             }
+            .onAppear {
+                print("HOME VM:", ObjectIdentifier(activityViewModel))
+            }
+            .onChange(of: activityViewModel.activities) { _, _ in
+                print("HOME: activities changed!")
+            }
         }
     }
 }
 
 
-#Preview("With Data") {
+#Preview("Home - With Data") {
     let vm = ActivityListViewModel()
-    vm.activities = [
-        ActivityModel(title: "Study SwiftUI: State & Binding", duration: 300),
-        ActivityModel(title: "Grind for HiFi Design", duration: 600)
-    ]
-    
-    return HomeScreenView(activityViewModel: vm)
+
+    let _ = vm.addActivity(title: "Study SwiftUI", duration: 5)
+    let _ = vm.addActivity(title: "Read a Book", duration: 600)
+
+    HomeScreenView()
+        .environment(vm)
 }
 
-#Preview("Empty State") {
+#Preview("Home - Empty State") {
+    let vm = ActivityListViewModel()
+
     HomeScreenView()
+        .environment(vm)
 }

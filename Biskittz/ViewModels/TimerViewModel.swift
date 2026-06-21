@@ -29,6 +29,8 @@ class TimerViewModel {
     // Button function
     
     func start() {
+        guard timer == nil else { return }
+        
         timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
             self?.tick()
         }

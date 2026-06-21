@@ -25,11 +25,33 @@ class ActivityListViewModel {
         activities.append(activity)
     }
     
-    func logSession(activityID: UUID, duration: Int) {
-        if let sessionIndex = activities.firstIndex(where: { $0.id == activityID }) {
-            let session = SessionModel(activityId: activityID, duration: duration)
-            activities[sessionIndex].sessions.append(session)
-            activities[sessionIndex].lastUsed = Date()
+    func logSession(activityID: UUID) {
+//        guard let index = activities.firstIndex(where: { $0.id == activityID }) else {
+//                return
+//            }
+        
+        if let index = activities.firstIndex(where: { $0.id == activityID }) {
+            var updatedActivity = activities[index]
+            
+            print("Looking for activity:", activityID)
+            print("Found activity at index:", index)
+            
+            let session = SessionModel(activityId: activityID)
+            updatedActivity.sessions.append(session)
+            updatedActivity.lastUsed = Date()
+            
+            var updatedActivities = activities
+            updatedActivities[index] = updatedActivity
+            activities = updatedActivities
+            
+            print(
+                "Session count:", activities[index].sessions.count
+            )
+            
+            print("Sessions after update:", activities[index].sessions.count)
+            print("Activities array count:", activities.count)
+            
+            
         }
         // SessionModel += 1 when the timer in timer screen reaches 0
     }
